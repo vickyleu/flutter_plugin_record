@@ -55,7 +55,7 @@ class FlutterPluginRecord {
 
   ///原生回调
   static Future<dynamic> _handler(MethodCall methodCall) {
-    print("--------FlutterPluginRecord " + methodCall.method);
+//    print("--------FlutterPluginRecord " + methodCall.method);
 
     String id = (methodCall.arguments as Map)['id'];
     FlutterPluginRecord recordPlugin = alis[id];
