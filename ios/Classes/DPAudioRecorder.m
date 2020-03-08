@@ -41,15 +41,21 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 @implementation DPAudioRecorder
 
 - (NSString *)originWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio%.0f.wav"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio%@.wav",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
+                                                                                                                                                                                  ]
+                                                                                                                           ];
 }
 
 - (NSString *)amrFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"AMRtemporaryRadio%.0f.amr"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"AMRtemporaryRadio%@.amr",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
+                                                                                                                                                                                      ]
+                                                                                                                               ];
 }
 
 - (NSString *)convertedWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio2%.0f.wav"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio2%@.wav",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
+                                                                                                                                                                                   ]
+                                                                                                                            ];
 }
 
 static DPAudioRecorder *recorderManager = nil;
