@@ -11,7 +11,9 @@
 //  [SwiftFlutterPluginRecordPlugin registerWithRegistrar:registrar];
 //}
 //@end
-
+@interface FlutterPluginRecordPlugin
+@property (nonatomic, strong) DPAudioRecorder *audioRecorder;
+@end
 @implementation FlutterPluginRecordPlugin{
     FlutterMethodChannel *_channel;
     FlutterResult  _result;
@@ -58,7 +60,8 @@
 }
 
 - (void) initRecord{
-    DPAudioRecorder.sharedInstance.audioRecorderFinishRecording = ^void (NSData *data, NSTimeInterval audioTimeLength,NSString *path){
+    self.audioRecorder=[[DPAudioRecorder alloc] init];
+    self.audioRecorder.audioRecorderFinishRecording = ^void (NSData *data, NSTimeInterval audioTimeLength,NSString *path){
         self->audioPath =path;
         self->wavData = data;        
         NSLog(@"ios  voice   onStop");
@@ -75,15 +78,15 @@
         
     };
     
-    DPAudioRecorder.sharedInstance.audioStartRecording =  ^void(BOOL isRecording){
+    self.audioRecorder.audioStartRecording =  ^void(BOOL isRecording){
            NSLog(@"ios  voice   start  audioStartRecording");
     };
-    DPAudioRecorder.sharedInstance.audioRecordingFail = ^void(NSString *reason){
+    self.audioRecorder.audioRecordingFail = ^void(NSString *reason){
     
         NSLog(@"ios  voice %@", reason);
         
     };
-    DPAudioRecorder.sharedInstance.audioSpeakPower = ^void(float power){
+    self.audioRecorder.audioSpeakPower = ^void(float power){
         NSLog(@"ios  voice %f",power);
         NSString *powerStr = [NSString stringWithFormat:@"%f", power];
         NSDictionary *args =   [self->_call arguments];
@@ -105,7 +108,7 @@
 
 - (void) start{
     
-    [DPAudioRecorder.sharedInstance startRecording];
+    [self.audioRecorder startRecording];
     
     NSLog(@"ios  voice   start");
     NSDictionary *args =   [_call arguments];
@@ -114,7 +117,7 @@
     [_channel invokeMethod:@"onStart" arguments:dict3];
 }
 - (void) stop{
-    [DPAudioRecorder.sharedInstance stopRecording];
+    [self.audioRecorder stopRecording];
 }
 
 //public enum PlayState {

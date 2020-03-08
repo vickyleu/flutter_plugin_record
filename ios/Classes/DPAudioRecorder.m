@@ -59,16 +59,6 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
             ];
 }
 
-static DPAudioRecorder *recorderManager = nil;
-+ (DPAudioRecorder *)sharedInstance
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken,^{
-        recorderManager = [[DPAudioRecorder alloc] init];
-    });
-    
-    return recorderManager;
-}
 
 - (instancetype)init
 {

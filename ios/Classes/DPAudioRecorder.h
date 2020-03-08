@@ -26,7 +26,6 @@ typedef void(^AudioSpeakPowerBlock)(float power);
 
 @property (nonatomic, copy) AudioSpeakPowerBlock audioSpeakPower;                            //音频值测量回调
 
-+ (DPAudioRecorder *)sharedInstance;
 
 /**
  开始录音
