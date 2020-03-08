@@ -34,7 +34,7 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 @property (nonatomic, strong, readonly) NSString *originWaveFilePath;
 @property (nonatomic, strong, readonly) NSString *amrFilePath;
 @property (nonatomic, strong, readonly) NSString *convertedWaveFilePath;
-@property (nonatomic, strong, readonly) NSDate *_date;
+@property (nonatomic, strong) NSDate *_date;
 
 
 @end
