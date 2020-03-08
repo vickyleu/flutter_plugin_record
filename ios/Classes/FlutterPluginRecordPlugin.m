@@ -3,17 +3,18 @@
 #import "DPAudioPlayer.h"
 
 
-
 //#import <flutter_plugin_record/flutter_plugin_record-Swift.h>
 
 //@implementation FlutterPluginRecordPlugin
 //+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
 //  [SwiftFlutterPluginRecordPlugin registerWithRegistrar:registrar];
 //}
-//@end
+
 @interface FlutterPluginRecordPlugin()
-@property (nonatomic, strong) DPAudioRecorder *audioRecorder;
+@property(nonatomic,strong)DPAudioRecorder*audioRecorder;
 @end
+
+
 @implementation FlutterPluginRecordPlugin{
     FlutterMethodChannel *_channel;
     FlutterResult  _result;
@@ -23,11 +24,11 @@
 }
 
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
-   FlutterMethodChannel *channel = [FlutterMethodChannel
+    FlutterMethodChannel *channel = [FlutterMethodChannel
                                      methodChannelWithName:@"flutter_plugin_record"
                                      binaryMessenger:[registrar messenger]];
     
-   FlutterPluginRecordPlugin *instance =  [[FlutterPluginRecordPlugin alloc] initWithChannel:channel];
+    FlutterPluginRecordPlugin *instance =  [[FlutterPluginRecordPlugin alloc] initWithChannel:channel];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
@@ -52,37 +53,36 @@
     }else if([@"play" isEqualToString:method]){
         [self play ];
     }else if([@"playByPath" isEqualToString:method]){
-         [self playByPath];
+        [self playByPath];
     }else{
-      result(FlutterMethodNotImplemented);
+        result(FlutterMethodNotImplemented);
     }
-
+    
 }
 
 - (void) initRecord{
-    self.audioRecorder=[[DPAudioRecorder alloc] init];
     self.audioRecorder.audioRecorderFinishRecording = ^void (NSData *data, NSTimeInterval audioTimeLength,NSString *path){
         self->audioPath =path;
-        self->wavData = data;        
+        self->wavData = data;
         NSLog(@"ios  voice   onStop");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
-   
+        
         NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     @"success", @"result",
-                                     mId, @"id",
-                                     path, @"voicePath",
-                                     [NSString stringWithFormat:@"%.20lf", audioTimeLength], @"audioTimeLength",
-                                      nil];
+                               @"success", @"result",
+                               mId, @"id",
+                               path, @"voicePath",
+                               [NSString stringWithFormat:@"%.20lf", audioTimeLength], @"audioTimeLength",
+                               nil];
         [self->_channel invokeMethod:@"onStop" arguments:dict3];
         
     };
     
     self.audioRecorder.audioStartRecording =  ^void(BOOL isRecording){
-           NSLog(@"ios  voice   start  audioStartRecording");
+        NSLog(@"ios  voice   start  audioStartRecording");
     };
     self.audioRecorder.audioRecordingFail = ^void(NSString *reason){
-    
+        
         NSLog(@"ios  voice %@", reason);
         
     };
@@ -92,10 +92,10 @@
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
         NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          @"success",@"result",
-                                          mId ,@"id",
-                                          powerStr,@"amplitude",
-                                          nil];
+                               @"success",@"result",
+                               mId ,@"id",
+                               powerStr,@"amplitude",
+                               nil];
         [self->_channel invokeMethod:@"onAmplitude" arguments:dict3];
     };
     
@@ -120,18 +120,18 @@
     [self.audioRecorder stopRecording];
 }
 
-//public enum PlayState {
-//    prepare, start, pause, complete
-//}
+    //public enum PlayState {
+    //    prepare, start, pause, complete
+    //}
 
 - (void) play{
     
-    [self.audioRecorder startPlayWithData:self->wavData];
-    self.audioRecorder.playComplete = ^void(){
+    [DPAudioPlayer.sharedInstance startPlayWithData:self->wavData];
+    DPAudioPlayer.sharedInstance.playComplete = ^void(){
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
-        NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:self.audioPath,@"playPath",@"complete",@"playState",mId,@"id", nil];
+        NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:audioPath,@"playPath",@"complete",@"playState",mId,@"id", nil];
         [self->_channel invokeMethod:@"onPlayState" arguments:dict3];
     };
     
@@ -150,7 +150,7 @@
     NSData* data= [NSData dataWithContentsOfFile:filePath];
     
     [DPAudioPlayer.sharedInstance startPlayWithData:data];
-     DPAudioPlayer.sharedInstance.playComplete = ^void(){
+    DPAudioPlayer.sharedInstance.playComplete = ^void(){
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
@@ -165,4 +165,3 @@
 
 
 @end
-
