@@ -12,6 +12,7 @@
 
 @interface FlutterPluginRecordPlugin()
 @property(nonatomic,strong)DPAudioRecorder*audioRecorder;
+@property(nonatomic,strong)DPAudioPlayer*audioPlayer;
 @end
 
 
@@ -61,6 +62,9 @@
 }
 
 - (void) initRecord{
+    self.audioRecorder=[[DPAudioRecorder alloc]init];
+    self.audioPlayer=[DPAudioPlayer sharedInstance];
+    
     self.audioRecorder.audioRecorderFinishRecording = ^void (NSData *data, NSTimeInterval audioTimeLength,NSString *path){
         self->audioPath =path;
         self->wavData = data;
@@ -126,8 +130,8 @@
 
 - (void) play{
     
-    [DPAudioPlayer.sharedInstance startPlayWithData:self->wavData];
-    DPAudioPlayer.sharedInstance.playComplete = ^void(){
+    [self.audioPlayer startPlayWithData:self->wavData];
+    self.audioPlayer.playComplete = ^void(){
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
@@ -149,8 +153,8 @@
     NSString *filePath = [args valueForKey:@"path"];
     NSData* data= [NSData dataWithContentsOfFile:filePath];
     
-    [DPAudioPlayer.sharedInstance startPlayWithData:data];
-    DPAudioPlayer.sharedInstance.playComplete = ^void(){
+    [self.audioPlayer startPlayWithData:data];
+    self.audioPlayer.playComplete = ^void(){
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
