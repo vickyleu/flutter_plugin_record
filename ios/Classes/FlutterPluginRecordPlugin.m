@@ -126,8 +126,8 @@
 
 - (void) play{
     
-    [DPAudioPlayer.sharedInstance startPlayWithData:self->wavData];
-    DPAudioPlayer.sharedInstance.playComplete = ^void(){
+    [self.audioRecorder startPlayWithData:self->wavData];
+    self.audioRecorder.playComplete = ^void(){
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
