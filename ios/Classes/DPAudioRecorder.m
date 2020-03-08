@@ -1,10 +1,10 @@
-//
-//  AmrRecorder.m
-//  aaaa
-//
-//  Created by Andrew on 2017/7/17.
-//  Copyright © 2017年 Andrew. All rights reserved.
-//
+    //
+    //  AmrRecorder.m
+    //  aaaa
+    //
+    //  Created by Andrew on 2017/7/17.
+    //  Copyright © 2017年 Andrew. All rights reserved.
+    //
 
 #import "DPAudioRecorder.h"
 #import "DPAudioPlayer.h"
@@ -34,6 +34,7 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 @property (nonatomic, strong, readonly) NSString *originWaveFilePath;
 @property (nonatomic, strong, readonly) NSString *amrFilePath;
 @property (nonatomic, strong, readonly) NSString *convertedWaveFilePath;
+@property (nonatomic, strong, readonly) NSDate *_date;
 
 
 @end
@@ -41,21 +42,21 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 @implementation DPAudioRecorder
 
 - (NSString *)originWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio%@.wav",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
-                                                                                                                                                                                  ]
-                                                                                                                           ];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio_%@.wav",[NSString stringWithFormat:@"%.0f", [self._date timeIntervalSince1970]*1000]
+                                                                   ]
+            ];
 }
 
 - (NSString *)amrFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"AMRtemporaryRadio%@.amr",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
-                                                                                                                                                                                      ]
-                                                                                                                               ];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"AMRtemporaryRadio_%@.amr",[NSString stringWithFormat:@"%.0f", [self._date timeIntervalSince1970]*1000]
+                                                                   ]
+            ];
 }
 
 - (NSString *)convertedWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio2%@.wav",[NSString stringWithFormat:@"%.0f", [[NSDate date] timeIntervalSince1970]*1000]
-                                                                                                                                                                                   ]
-                                                                                                                            ];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio2_%@.wav",[NSString stringWithFormat:@"%.0f", [self._date timeIntervalSince1970]*1000]
+                                                                   ]
+            ];
 }
 
 static DPAudioRecorder *recorderManager = nil;
@@ -65,6 +66,7 @@ static DPAudioRecorder *recorderManager = nil;
     
     dispatch_once(&onceToken,^{
         recorderManager = [[DPAudioRecorder alloc] init];
+        recorderManager._date=[NSDate date];
     });
     
     return recorderManager;
@@ -73,7 +75,7 @@ static DPAudioRecorder *recorderManager = nil;
 - (instancetype)init
 {
     if (self = [super init]) {
-        //创建缓存录音文件到Tmp
+            //创建缓存录音文件到Tmp
         NSString *wavRecordFilePath = self.originWaveFilePath;
         if (![[NSFileManager defaultManager] fileExistsAtPath:wavRecordFilePath]) {
             [[NSData data] writeToFile:wavRecordFilePath atomically:YES];
@@ -89,7 +91,7 @@ static DPAudioRecorder *recorderManager = nil;
             [[NSData data] writeToFile:convertedWaveFilePath atomically:YES];
         }
         NSLog(@"录制文件路径 %@",wavRecordFilePath);
-    
+        
     }
     return self;
 }
@@ -99,14 +101,14 @@ static DPAudioRecorder *recorderManager = nil;
     if (isRecording) return;
     
     [[DPAudioPlayer sharedInstance]stopPlaying];
-    //开始录音
+        //开始录音
     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error:nil];
-    //    //默认情况下扬声器播放
-     AVAudioSessionPortOverride portOverride = AVAudioSessionPortOverrideNone;
+        //    //默认情况下扬声器播放
+    AVAudioSessionPortOverride portOverride = AVAudioSessionPortOverrideNone;
     [[AVAudioSession sharedInstance] overrideOutputAudioPort:portOverride error:nil];
     
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
-
+    
     [self.audioRecorder prepareToRecord];
     
     [self.audioRecorder record];
@@ -130,21 +132,21 @@ static DPAudioRecorder *recorderManager = nil;
 - (void)stopRecording;
 {
     if (!isRecording) return;
-//  try!AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        //  try!AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
     [self shutDownTimer];
     [self.audioRecorder stop];
     self.audioRecorder = nil;
     
-    //设置播放语音为k公开模式
+        //设置播放语音为k公开模式
     AVAudioSession *avAudioSession = [AVAudioSession sharedInstance];
     [avAudioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
-
+    
 }
 
 - (void)activeTimer
 {
     
-    //录音时长
+        //录音时长
     audioTimeLength = 0;
     NSTimeInterval timeInterval = 0.1;
     __weak typeof(self) weakSelf = self;
@@ -165,7 +167,7 @@ static DPAudioRecorder *recorderManager = nil;
 - (AVAudioRecorder *)audioRecorder {
     if (!_audioRecorder) {
         
-        //暂存录音文件路径
+            //暂存录音文件路径
         NSString *wavRecordFilePath = self.originWaveFilePath;
         NSLog(@"%@", wavRecordFilePath);
         NSDictionary *param =
@@ -173,10 +175,10 @@ static DPAudioRecorder *recorderManager = nil;
           AVFormatIDKey:@(kAudioFormatLinearPCM),//音频格式
           AVLinearPCMBitDepthKey:@16,    //采样位数 默认 16
           AVNumberOfChannelsKey:@1,   // 通道的数目
-//          AVEncoderAudioQualityKey:@(AVAudioQualityHigh),
-//          AVEncoderBitRateKey:@128000,
-//          AVEncoderBitRateStrategyKey:AVAudioBitRateStrategy_VariableConstrained
-          };
+          //          AVEncoderAudioQualityKey:@(AVAudioQualityHigh),
+          //          AVEncoderBitRateKey:@128000,
+          //          AVEncoderBitRateStrategyKey:AVAudioBitRateStrategy_VariableConstrained
+        };
         
         NSError *initError;
         NSURL *fileURL = [NSURL fileURLWithPath:wavRecordFilePath];
@@ -194,7 +196,7 @@ static DPAudioRecorder *recorderManager = nil;
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
 {
-    //暂存录音文件路径
+        //暂存录音文件路径
     NSString *wavRecordFilePath = self.originWaveFilePath;
     NSLog(@"录音暂存位置 %@ ",wavRecordFilePath);
     NSData *cacheAudioData;
@@ -204,21 +206,21 @@ static DPAudioRecorder *recorderManager = nil;
             break;
         case CSVoiceTypeAmr: {
             NSString *amrRecordFilePath = self.amrFilePath;
-            //重点:把wav录音文件转换成amr文件,用于网络传输.amr文件大小是wav文件的十分之一左右
+                //重点:把wav录音文件转换成amr文件,用于网络传输.amr文件大小是wav文件的十分之一左右
             wave_file_to_amr_file([wavRecordFilePath cStringUsingEncoding:NSUTF8StringEncoding],[amrRecordFilePath cStringUsingEncoding:NSUTF8StringEncoding], 1, 16);
-            //返回amr音频文件Data,用于传输或存储
+                //返回amr音频文件Data,用于传输或存储
             cacheAudioData = [NSData dataWithContentsOfFile:amrRecordFilePath];
         } break;
     }
     
-    //大于最小录音时长时,发送数据
+        //大于最小录音时长时,发送数据
     if (audioTimeLength > MIN_RECORDER_TIME) {
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             NSUInteger location = 4100;
             NSData *body = [cacheAudioData subdataWithRange:NSMakeRange(location, cacheAudioData.length - location)];
             NSMutableData *data1 = WriteWavFileHeader(body.length + 44, 8000, 1, 16).mutableCopy;
             [data1 appendData:body];
-//            NSLog(@"date1date1date1date1[0-200]:%@", [data1 subdataWithRange:NSMakeRange(0, 200)]);
+                //            NSLog(@"date1date1date1date1[0-200]:%@", [data1 subdataWithRange:NSMakeRange(0, 200)]);
             
             dispatch_sync(dispatch_get_main_queue(), ^{
                 if (self.audioRecorderFinishRecording) {
@@ -234,7 +236,7 @@ static DPAudioRecorder *recorderManager = nil;
     
     isRecording = NO;
     
-    //取消定时器
+        //取消定时器
     if (timer) {
         dispatch_source_cancel(timer);
         timer = NULL;
@@ -293,7 +295,7 @@ NSData* WriteWavFileHeader(long lengthWithHeader, int sampleRate, int channels, 
     return [[NSData alloc] initWithBytes:header length:44];;
 }
 
-//音频值测量
+    //音频值测量
 - (void)createPickSpeakPowerTimer
 {
     timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -317,7 +319,7 @@ NSData* WriteWavFileHeader(long lengthWithHeader, int sampleRate, int channels, 
 - (void)dealloc
 {
     if (isRecording) [self.audioRecorder stop];
-     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
