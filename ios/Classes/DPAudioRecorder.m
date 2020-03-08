@@ -41,15 +41,15 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 @implementation DPAudioRecorder
 
 - (NSString *)originWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:@"WAVtemporaryRadio.wav"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio%.0f.wav"];
 }
 
 - (NSString *)amrFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:@"AMRtemporaryRadio.amr"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"AMRtemporaryRadio%.0f.amr"];
 }
 
 - (NSString *)convertedWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:@"WAVtemporaryRadio2.wav"];
+    return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"WAVtemporaryRadio2%.0f.wav"];
 }
 
 static DPAudioRecorder *recorderManager = nil;
