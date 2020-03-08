@@ -63,10 +63,8 @@ static DPAudioRecorder *recorderManager = nil;
 + (DPAudioRecorder *)sharedInstance
 {
     static dispatch_once_t onceToken;
-    
     dispatch_once(&onceToken,^{
         recorderManager = [[DPAudioRecorder alloc] init];
-        recorderManager._date=[NSDate date];
     });
     
     return recorderManager;
@@ -75,6 +73,7 @@ static DPAudioRecorder *recorderManager = nil;
 - (instancetype)init
 {
     if (self = [super init]) {
+        self._date=[NSDate date];
             //创建缓存录音文件到Tmp
         NSString *wavRecordFilePath = self.originWaveFilePath;
         if (![[NSFileManager defaultManager] fileExistsAtPath:wavRecordFilePath]) {
