@@ -11,7 +11,7 @@
 //  [SwiftFlutterPluginRecordPlugin registerWithRegistrar:registrar];
 //}
 //@end
-@interface FlutterPluginRecordPlugin
+@interface FlutterPluginRecordPlugin()
 @property (nonatomic, strong) DPAudioRecorder *audioRecorder;
 @end
 @implementation FlutterPluginRecordPlugin{
@@ -131,7 +131,7 @@
         NSLog(@"播放完成");
         NSDictionary *args =   [self->_call arguments];
         NSString *mId = [args valueForKey:@"id"];
-        NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:audioPath,@"playPath",@"complete",@"playState",mId,@"id", nil];
+        NSDictionary *dict3 = [NSDictionary dictionaryWithObjectsAndKeys:self.audioPath,@"playPath",@"complete",@"playState",mId,@"id", nil];
         [self->_channel invokeMethod:@"onPlayState" arguments:dict3];
     };
     
