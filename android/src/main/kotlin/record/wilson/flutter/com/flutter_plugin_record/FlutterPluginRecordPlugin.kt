@@ -119,9 +119,11 @@ class FlutterPluginRecordPlugin : MethodCallHandler, PluginRegistry.RequestPermi
   private fun stop() {
     if (audioHandler != null) {
       if (audioHandler?.isRecording == true) {
-        audioHandler?.stopRecord()
+        audioHandler?.cancelRecord()
       }
     }
+    print("audioHandler?.stopRecord()audioHandler?.stopRecord()")
+
     Log.d("android voice  ", "stop")
   }
 
