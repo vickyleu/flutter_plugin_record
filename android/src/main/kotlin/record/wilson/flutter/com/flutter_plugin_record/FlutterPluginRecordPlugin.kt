@@ -167,7 +167,7 @@ class FlutterPluginRecordPlugin : MethodCallHandler, PluginRegistry.RequestPermi
   private inner class MessageRecordListener : AudioHandler.RecordListener {
     override fun onStop(recordFile: File?, audioTime: Long?) {
       LogUtils.LOGE("MessageRecordListener onStop $recordFile")
-      voicePlayPath = recordFile!!.path
+      voicePlayPath = recordFile?.path
       val _id = _call?.argument<String>("id") ?: ""
       val m1 = HashMap<String, String>()
       m1["id"] = _id
