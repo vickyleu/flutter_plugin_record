@@ -72,8 +72,9 @@ public final class AudioHandler extends Handler {
     }
 
     public void stopRecord() {
+//        pauseRecord();
         AudioThread audioThread = mThread.get();
-        if (audioThread != null) audioThread.setPauseRecord();
+        if (audioThread != null) audioThread.pauseRecord();
     }
 
     public void cancelRecord() {
@@ -333,6 +334,7 @@ public final class AudioHandler extends Handler {
 
         private void pauseRecord() {
             setPauseRecord();
+            Log.e("pauseRecord","setPauseRecord");
             if (mRecord != null) {
                 if (mRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
                     mRecord.release();
